@@ -1,0 +1,153 @@
+version: "3.3"
+services:
+  db1:
+    image: mysql:5.7
+    volumes:
+      - db_data1:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
+  wordpress1:
+    depends_on:
+      - db1
+    image: wordpress:latest
+    ports:
+      - 50001:80
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db1:3306
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_TABLE_PREFIX: "wp_"
+      WORDPRESS_DEBUG: 1
+    volumes:
+      - wp_data1:/var/www/html
+
+  wordpress-cli1:
+    depends_on:
+      - db1
+      - wordpress1
+    image: wordpress:cli
+    user: root
+    command: >
+      /bin/sh -c '
+      apk update && apk upgrade && apk add --no-cache openssl &&
+      wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
+      tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
+      rm dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
+      dockerize -wait tcp://db1:3306 -wait tcp://wordpress1:80 -timeout 1000s &&
+      echo "WordPress1 Waiting Successfull!!!!" &&
+      wp core install --path="/var/www/html" --url="http://localhost:50001" --title="TestPage1" --admin_user=admin --admin_password=secret --admin_email=admin@gmail.com --allow-root &&
+      wp plugin install classic-editor --version=1.0 --activate --allow-root
+      '
+    volumes:
+      - wp_data1:/var/www/html
+
+  db2:
+    image: mysql:5.7
+    volumes:
+      - db_data2:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
+  wordpress2:
+    depends_on:
+      - db2
+    image: wordpress:latest
+    ports:
+      - 50002:80
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db2:3306
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_TABLE_PREFIX: "wp_"
+      WORDPRESS_DEBUG: 1
+    volumes:
+      - wp_data2:/var/www/html
+
+  wordpress-cli2:
+    depends_on:
+      - db2
+      - wordpress2
+    image: wordpress:cli
+    user: root
+    command: >
+      /bin/sh -c '
+      apk update && apk upgrade && apk add --no-cache openssl &&
+      wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
+      tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
+      rm dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
+      dockerize -wait tcp://db2:3306 -wait tcp://wordpress2:80 -timeout 1000s &&
+      echo "WordPress2 Waiting Successfull!!!!" &&
+      wp core install --path="/var/www/html" --url="http://localhost:50002" --title="TestPage2" --admin_user=admin --admin_password=secret --admin_email=admin@gmail.com --allow-root &&
+      wp plugin install classic-editor --version=1.0 --activate --allow-root
+      '
+    volumes:
+      - wp_data2:/var/www/html
+
+  db3:
+    image: mysql:5.7
+    volumes:
+      - db_data3:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
+  wordpress3:
+    depends_on:
+      - db3
+    image: wordpress:latest
+    ports:
+      - 50003:80
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db3:3306
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_TABLE_PREFIX: "wp_"
+      WORDPRESS_DEBUG: 1
+    volumes:
+      - wp_data3:/var/www/html
+
+  wordpress-cli3:
+    depends_on:
+      - db3
+      - wordpress3
+    image: wordpress:cli
+    user: root
+    command: >
+      /bin/sh -c '
+      apk update && apk upgrade && apk add --no-cache openssl &&
+      wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
+      tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
+      rm dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
+      dockerize -wait tcp://db3:3306 -wait tcp://wordpress3:80 -timeout 1000s &&
+      echo "WordPress1 Waiting Successfull!!!!" &&
+      wp core install --path="/var/www/html" --url="http://localhost:50003" --title="TestPage3" --admin_user=admin --admin_password=secret --admin_email=admin@gmail.com --allow-root &&
+      wp plugin install classic-editor --version=1.0 --activate --allow-root
+      '
+    volumes:
+      - wp_data3:/var/www/html
+
+volumes:
+  db_data1:
+  wp_data1:
+  db_data2:
+  wp_data2:
+  db_data3:
+  wp_data3:
