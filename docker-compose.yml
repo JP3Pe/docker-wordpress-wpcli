@@ -32,14 +32,12 @@ services:
     depends_on:
       - db1
       - wordpress1
-    image: wordpress:cli
+    build:
+      context: .
+      dockerfile: Dockerfile
     user: root
     command: >
       /bin/sh -c '
-      apk update && apk upgrade && apk add --no-cache openssl &&
-      wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
-      tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
-      rm dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
       dockerize -wait tcp://db1:3306 -wait tcp://wordpress1:80 -timeout 1000s &&
       echo "WordPress1 Waiting Successfull!!!!" &&
       wp core install --path="/var/www/html" --url="http://localhost:50001" --title="TestPage1" --admin_user=admin --admin_password=secret --admin_email=admin@gmail.com --allow-root &&
@@ -80,14 +78,12 @@ services:
     depends_on:
       - db2
       - wordpress2
-    image: wordpress:cli
+    build:
+      context: .
+      dockerfile: Dockerfile
     user: root
     command: >
       /bin/sh -c '
-      apk update && apk upgrade && apk add --no-cache openssl &&
-      wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
-      tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
-      rm dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
       dockerize -wait tcp://db2:3306 -wait tcp://wordpress2:80 -timeout 1000s &&
       echo "WordPress2 Waiting Successfull!!!!" &&
       wp core install --path="/var/www/html" --url="http://localhost:50002" --title="TestPage2" --admin_user=admin --admin_password=secret --admin_email=admin@gmail.com --allow-root &&
@@ -128,14 +124,12 @@ services:
     depends_on:
       - db3
       - wordpress3
-    image: wordpress:cli
+    build:
+      context: .
+      dockerfile: Dockerfile
     user: root
     command: >
       /bin/sh -c '
-      apk update && apk upgrade && apk add --no-cache openssl &&
-      wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
-      tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
-      rm dockerize-alpine-linux-amd64-v0.6.1.tar.gz &&
       dockerize -wait tcp://db3:3306 -wait tcp://wordpress3:80 -timeout 1000s &&
       echo "WordPress1 Waiting Successfull!!!!" &&
       wp core install --path="/var/www/html" --url="http://localhost:50003" --title="TestPage3" --admin_user=admin --admin_password=secret --admin_email=admin@gmail.com --allow-root &&
